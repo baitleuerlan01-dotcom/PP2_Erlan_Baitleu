@@ -1,17 +1,45 @@
--- Уникальность имени контакта (чтобы импорт работал корректно)
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint 
-        WHERE conname = 'contacts_name_key'
-    ) THEN
-        ALTER TABLE contacts ADD CONSTRAINT contacts_name_key UNIQUE (name);
-    END IF;
+-- ============================================================
+-- PhoneBook Extended Schema
+-- TSIS 1: Extended Contact Management
+-- ============================================================
 
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint 
-        WHERE conname = 'phones_contact_phone_key'
-    ) THEN
-        ALTER TABLE phones ADD CONSTRAINT phones_contact_phone_key UNIQUE (contact_id, phone);
-    END IF;
-END $$;
+-- 1. Groups / Categories table
+CREATE TABLE IF NOT EXISTS groups (
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Insert default groups
+INSERT INTO groups (name) VALUES
+    ('Family'),
+    ('Work'),
+    ('Friend'),
+    ('Other')
+ON CONFLICT (name) DO NOTHING;
+
+-- 2. Contacts table (extended from Practice 7-8)
+CREATE TABLE IF NOT EXISTS contacts (
+    id         SERIAL PRIMARY KEY,
+    username   VARCHAR(50) UNIQUE NOT NULL,
+    first_name VARCHAR(50),
+    last_name  VARCHAR(50),
+    email      VARCHAR(100),
+    birthday   DATE,
+    group_id   INTEGER REFERENCES groups(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Phones table (1-to-many: one contact → many phones)
+CREATE TABLE IF NOT EXISTS phones (
+    id         SERIAL PRIMARY KEY,
+    contact_id INTEGER NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
+    phone      VARCHAR(20) NOT NULL,
+    type       VARCHAR(10) CHECK (type IN ('home', 'work', 'mobile')) DEFAULT 'mobile'
+);
+
+-- Indexes for faster search
+CREATE INDEX IF NOT EXISTS idx_contacts_username  ON contacts(username);
+CREATE INDEX IF NOT EXISTS idx_contacts_email     ON contacts(email);
+CREATE INDEX IF NOT EXISTS idx_contacts_group_id  ON contacts(group_id);
+CREATE INDEX IF NOT EXISTS idx_phones_contact_id  ON phones(contact_id);
+CREATE INDEX IF NOT EXISTS idx_phones_phone       ON phones(phone);

@@ -1,9 +1,7 @@
-name,phone,phone_type,email,birthday,group
-Alice Johnson,+1-555-0101,mobile,alice@gmail.com,1990-03-15,Friend
-Alice Johnson,+1-555-0102,work,alice@gmail.com,1990-03-15,Friend
-Bob Smith,+1-555-0201,home,bob.smith@work.com,1985-07-22,Work
-Carol White,+1-555-0301,mobile,carol@yahoo.com,1992-11-08,Family
-David Brown,+1-555-0401,work,david@company.org,1978-01-30,Work
-Eva Martinez,+1-555-0501,mobile,eva.m@gmail.com,1995-06-17,Friend
-Frank Lee,+1-555-0601,home,,1980-12-05,Other
-Grace Kim,+1-555-0701,mobile,grace@gmail.com,1993-09-21,Friend
+username,first_name,last_name,email,birthday,group,phone,phone_type
+alice,Alice,Smith,alice@gmail.com,1995-03-14,Friend,+1-555-0101,mobile
+alice,Alice,Smith,alice@gmail.com,1995-03-14,Friend,+1-555-0102,home
+bob,Bob,Jones,bob@work.com,1988-07-22,Work,+1-555-0201,work
+carol,Carol,White,carol@gmail.com,2000-11-05,Family,+1-555-0301,mobile
+david,David,Brown,david@yahoo.com,,Friend,+1-555-0401,mobile
+eve,Eve,Taylor,eve@company.com,1993-01-30,Work,+1-555-0501,work
