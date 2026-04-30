@@ -1,15 +1,8 @@
--- ============================================================
--- PhoneBook Extended Schema
--- TSIS 1: Extended Contact Management
--- ============================================================
-
--- 1. Groups / Categories table
 CREATE TABLE IF NOT EXISTS groups (
     id   SERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
--- Insert default groups
 INSERT INTO groups (name) VALUES
     ('Family'),
     ('Work'),
@@ -17,7 +10,6 @@ INSERT INTO groups (name) VALUES
     ('Other')
 ON CONFLICT (name) DO NOTHING;
 
--- 2. Contacts table (extended from Practice 7-8)
 CREATE TABLE IF NOT EXISTS contacts (
     id         SERIAL PRIMARY KEY,
     username   VARCHAR(50) UNIQUE NOT NULL,
@@ -29,7 +21,6 @@ CREATE TABLE IF NOT EXISTS contacts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Phones table (1-to-many: one contact → many phones)
 CREATE TABLE IF NOT EXISTS phones (
     id         SERIAL PRIMARY KEY,
     contact_id INTEGER NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
@@ -37,7 +28,6 @@ CREATE TABLE IF NOT EXISTS phones (
     type       VARCHAR(10) CHECK (type IN ('home', 'work', 'mobile')) DEFAULT 'mobile'
 );
 
--- Indexes for faster search
 CREATE INDEX IF NOT EXISTS idx_contacts_username  ON contacts(username);
 CREATE INDEX IF NOT EXISTS idx_contacts_email     ON contacts(email);
 CREATE INDEX IF NOT EXISTS idx_contacts_group_id  ON contacts(group_id);

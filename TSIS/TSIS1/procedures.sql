@@ -1,12 +1,3 @@
--- ============================================================
--- PhoneBook Stored Procedures & Functions
--- TSIS 1: New procedures (do NOT duplicate Practice 8 objects)
--- ============================================================
-
--- -------------------------------------------------------
--- 1. Procedure: add_phone
---    Adds a new phone number to an existing contact.
--- -------------------------------------------------------
 CREATE OR REPLACE PROCEDURE add_phone(
     p_contact_name VARCHAR,
     p_phone        VARCHAR,
@@ -21,7 +12,6 @@ BEGIN
         RAISE EXCEPTION 'Invalid phone type "%". Must be home, work, or mobile.', p_type;
     END IF;
 
-    -- Find the contact
     SELECT id INTO v_contact_id
     FROM contacts
     WHERE username = p_contact_name;
@@ -30,7 +20,6 @@ BEGIN
         RAISE EXCEPTION 'Contact "%" not found.', p_contact_name;
     END IF;
 
-    -- Check for duplicate phone
     IF EXISTS (
         SELECT 1 FROM phones
         WHERE contact_id = v_contact_id AND phone = p_phone
@@ -39,7 +28,6 @@ BEGIN
         RETURN;
     END IF;
 
-    -- Insert the phone
     INSERT INTO phones (contact_id, phone, type)
     VALUES (v_contact_id, p_phone, p_type);
 
@@ -47,12 +35,6 @@ BEGIN
 END;
 $$;
 
-
--- -------------------------------------------------------
--- 2. Procedure: move_to_group
---    Moves a contact to a different group.
---    Creates the group if it does not exist.
--- -------------------------------------------------------
 CREATE OR REPLACE PROCEDURE move_to_group(
     p_contact_name VARCHAR,
     p_group_name   VARCHAR
@@ -62,7 +44,6 @@ DECLARE
     v_contact_id INTEGER;
     v_group_id   INTEGER;
 BEGIN
-    -- Find or create the group
     SELECT id INTO v_group_id
     FROM groups
     WHERE name = p_group_name;
@@ -74,7 +55,6 @@ BEGIN
         RAISE NOTICE 'Group "%" created.', p_group_name;
     END IF;
 
-    -- Find the contact
     SELECT id INTO v_contact_id
     FROM contacts
     WHERE username = p_contact_name;
@@ -83,7 +63,6 @@ BEGIN
         RAISE EXCEPTION 'Contact "%" not found.', p_contact_name;
     END IF;
 
-    -- Move the contact
     UPDATE contacts
     SET group_id = v_group_id
     WHERE id = v_contact_id;
@@ -92,13 +71,6 @@ BEGIN
 END;
 $$;
 
-
--- -------------------------------------------------------
--- 3. Function: search_contacts
---    Extended search: matches username, first_name, last_name,
---    email, AND all phone numbers from the phones table.
---    Returns a table of matching contacts with their phones.
--- -------------------------------------------------------
 CREATE OR REPLACE FUNCTION search_contacts(p_query TEXT)
 RETURNS TABLE (
     contact_id  INTEGER,
@@ -138,13 +110,6 @@ BEGIN
 END;
 $$;
 
-
--- -------------------------------------------------------
--- 4. Function: get_contacts_page  (uses LIMIT/OFFSET)
---    Paginated list with optional group filter & sort.
---    Already have paginate_contacts from Practice 8;
---    this one adds group_filter and sort_by parameters.
--- -------------------------------------------------------
 CREATE OR REPLACE FUNCTION get_contacts_page(
     p_limit       INTEGER DEFAULT 10,
     p_offset      INTEGER DEFAULT 0,

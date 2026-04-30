@@ -1,7 +1,3 @@
-# config.py
-# Database connection settings
-# Change these to match your PostgreSQL installation
-
 DB_CONFIG = {
     "host":     "localhost",
     "port":     5432,

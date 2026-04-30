@@ -304,11 +304,9 @@ def main():
                 if drawing and in_canvas(mouse_pos):
                     active_tool.on_mouse_drag(canvas, canvas_mouse, active_color, brush_size)
 
-        # === Рисование ===
         screen.fill(BG_COLOR)
         screen.blit(canvas, CANVAS_OFFSET)
 
-        # Предпросмотр инструмента
         if in_canvas(mouse_pos) and not isinstance(active_tool, FillTool):
             preview_surf = canvas.copy()
             active_tool.draw_preview(preview_surf, canvas_mouse, active_color, brush_size)
@@ -319,11 +317,9 @@ def main():
         if text_tool.is_active:
             text_tool.draw_preview(screen, mouse_pos, active_color, brush_size)
 
-        # Рамка вокруг холста
         pygame.draw.rect(screen, (60, 60, 75),
                          (CANVAS_OFFSET[0] - 1, CANVAS_OFFSET[1] - 1, CANVAS_W + 2, CANVAS_H + 2), 1)
 
-        # === Панель инструментов ===
         pygame.draw.rect(screen, TOOLBAR_COLOR, (0, 0, WIN_W, TOOLBAR_H))
         pygame.draw.line(screen, (50, 50, 65), (0, TOOLBAR_H), (WIN_W, TOOLBAR_H), 1)
 
@@ -332,7 +328,6 @@ def main():
         for btn in size_buttons:
             btn.draw(screen)
 
-        # === Палитра ===
         pygame.draw.rect(screen, PALETTE_BG, (0, WIN_H - PALETTE_H, WIN_W, PALETTE_H))
         pygame.draw.line(screen, (50, 50, 65), (0, WIN_H - PALETTE_H), (WIN_W, WIN_H - PALETTE_H), 1)
 
@@ -342,12 +337,10 @@ def main():
                 pygame.draw.rect(screen, (255, 255, 255), rect.inflate(4, 4), 2, border_radius=6)
             pygame.draw.rect(screen, ACCENT, rect.inflate(6, 6), 2, border_radius=7)
 
-        # Предпросмотр текущего цвета
         preview_rect = pygame.Rect(8, WIN_H - PALETTE_H + 4, 38, 38)
         pygame.draw.rect(screen, active_color, preview_rect, border_radius=5)
         pygame.draw.rect(screen, (180, 180, 200), preview_rect, 2, border_radius=5)
 
-        # Статус
         if status_msg:
             surf = status_font.render(status_msg, True, (180, 230, 180))
             screen.blit(surf, (56, WIN_H - PALETTE_H + 16))

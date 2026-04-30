@@ -1,8 +1,3 @@
-# phonebook.py
-# PhoneBook — Extended Contact Management (TSIS 1)
-# Extends Practice 7 & 8 with: multi-phone, email, birthday,
-# groups, JSON import/export, advanced search & filter.
-
 import csv
 import json
 import os
@@ -11,17 +6,12 @@ from datetime import date, datetime
 
 from connect import get_connection, get_cursor
 
-# ─────────────────────────────────────────────
-# Helpers
-# ─────────────────────────────────────────────
-
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
 
 def pause():
     input("\nPress Enter to continue...")
-
 
 def print_contact_row(row):
     """Pretty-print one contact dict/row."""
@@ -34,11 +24,6 @@ def print_contact_row(row):
     print(f"  Phones   : {row.get('phones_list') or '—'}")
     print(f"  Added    : {row.get('created_at', '')}")
     print()
-
-
-# ─────────────────────────────────────────────
-# 3.1  CRUD helpers (new fields)
-# ─────────────────────────────────────────────
 
 def get_group_id(cur, group_name):
     """Return group id; create group if absent."""
@@ -107,10 +92,6 @@ def update_contact(username, **fields):
     print(f"  Contact '{username}' updated.")
 
 
-# ─────────────────────────────────────────────
-# 3.2  Advanced Search & Filter
-# ─────────────────────────────────────────────
-
 def search_all(query):
     """Use the DB function search_contacts() — searches name, email, phones."""
     with get_connection() as conn:
@@ -159,10 +140,6 @@ def search_by_email(partial_email):
             return cur.fetchall()
 
 
-# ─────────────────────────────────────────────
-# Paginated navigation (uses DB function from TSIS 1)
-# ─────────────────────────────────────────────
-
 def paginated_browse(page_size=5, group_filter=None, sort_by="username"):
     """Console loop: next / prev / quit with DB-side pagination."""
     offset = 0
@@ -202,10 +179,6 @@ def paginated_browse(page_size=5, group_filter=None, sort_by="username"):
         elif choice == "q":
             return
 
-
-# ─────────────────────────────────────────────
-# 3.3  Import / Export
-# ─────────────────────────────────────────────
 
 def export_to_json(filepath="contacts_export.json"):
     """Export all contacts (with phones and group) to a JSON file."""
@@ -254,7 +227,6 @@ def import_from_json(filepath="contacts_export.json"):
                 if not username:
                     continue
 
-                # Check duplicate
                 cur.execute("SELECT id FROM contacts WHERE username = %s", (username,))
                 existing = cur.fetchone()
 
@@ -265,7 +237,6 @@ def import_from_json(filepath="contacts_export.json"):
                     if choice != "o":
                         skipped += 1
                         continue
-                    # Overwrite: delete old phones, update contact
                     cur.execute("DELETE FROM phones WHERE contact_id = %s", (existing[0],))
                     group_id = get_group_id(cur, c.get("group_name"))
                     cur.execute(
@@ -320,7 +291,6 @@ def import_from_csv(filepath="contacts.csv"):
         reader = csv.DictReader(f)
         rows = list(reader)
 
-    # Group rows by username
     contacts_map = {}
     for row in rows:
         uname = row.get("username", "").strip()
@@ -371,10 +341,6 @@ def import_from_csv(filepath="contacts.csv"):
     print(f"  CSV import: {inserted} inserted, {skipped} skipped (duplicate usernames).")
 
 
-# ─────────────────────────────────────────────
-# 3.4  Stored procedure wrappers
-# ─────────────────────────────────────────────
-
 def call_add_phone(contact_name, phone, phone_type="mobile"):
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -394,10 +360,6 @@ def call_move_to_group(contact_name, group_name):
             )
         conn.commit()
 
-
-# ─────────────────────────────────────────────
-# Console UI
-# ─────────────────────────────────────────────
 
 def show_results(rows, title="Results"):
     clear()

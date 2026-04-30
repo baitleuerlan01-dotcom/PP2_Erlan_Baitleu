@@ -1,9 +1,3 @@
-"""
-tools.py — Drawing tool implementations for the Paint application.
-Covers: pencil, line, rectangle, circle, square, right triangle,
-equilateral triangle, rhombus, eraser, flood-fill, and text tool.
-"""
-
 import pygame
 import math
 from collections import deque
@@ -322,10 +316,6 @@ def flood_fill(canvas, start_pos, fill_color):
 
 
 class TextTool:
-    """
-    Click to place cursor → type characters → Enter confirms → Escape cancels.
-    The tool manages its own state; paint.py queries is_active / get_text_pos.
-    """
 
     def __init__(self):
         self.active = False

@@ -25,7 +25,6 @@ def _connect():
 
 
 def init_db():
-    """Create tables if they don't exist. Returns True on success."""
     try:
         with _connect() as conn:
             with conn.cursor() as cur:

@@ -1,11 +1,6 @@
-
-
 import random
 import pygame
 from config import *
-
-
-
 
 def random_cell(exclude: set[tuple] = None) -> tuple[int, int]:
     """Return a random (col, row) not in exclude."""
@@ -14,9 +9,6 @@ def random_cell(exclude: set[tuple] = None) -> tuple[int, int]:
         c = (random.randint(0, GRID_COLS - 1), random.randint(0, GRID_ROWS - 1))
         if c not in exclude:
             return c
-
-
-
 
 class Snake:
     DIRS = {
@@ -135,13 +127,11 @@ def pick_food_type() -> str:
     return random.choice(pool)
 
 
-
 POWERUP_CFG = {
     "speed":  {"color": ORANGE, "label": "⚡",  "symbol": "S"},
     "slow":   {"color": CYAN,   "label": "🐢",  "symbol": "~"},
     "shield": {"color": PURPLE, "label": "🛡",  "symbol": "O"},
 }
-
 
 class PowerUp:
     def __init__(self, ptype: str, pos: tuple, spawn_time: int):
@@ -164,7 +154,6 @@ class PowerUp:
         surface.blit(txt, txt.get_rect(center=r.center))
 
 
-
 class ActiveEffect:
     def __init__(self, etype: str, start: int):
         self.etype = etype
@@ -175,7 +164,6 @@ class ActiveEffect:
 
     def is_done(self, now: int) -> bool:
         return self.etype != "shield" and self.remaining_ms(now) == 0
-
 
 
 def generate_obstacles(level: int, snake_cells: set) -> set[tuple]:
@@ -205,7 +193,6 @@ def draw_obstacles(surface, walls: set):
         r = pygame.Rect(cx * CELL_SIZE, cy * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         pygame.draw.rect(surface, WALL_CLR, r)
         pygame.draw.rect(surface, (60, 60, 80), r, 1)
-
 
 
 class GameState:
@@ -311,7 +298,6 @@ class GameState:
                 self.game_over = True
                 return True
 
-        # self collision
         if new_head in set(self.snake.body[1:]):
             if self.effect and self.effect.etype == "shield" and not self.shield_consumed:
                 self.shield_consumed = True
@@ -336,7 +322,6 @@ class GameState:
             else:
                 self.snake.grow()
                 self.score += eaten.score
-            # re-spawn food
             self._spawn_food_set(now)
             self._maybe_spawn_powerup(now)
 
@@ -360,7 +345,6 @@ class GameState:
         return False
 
     def draw(self, surface, font_sm, show_grid: bool):
-        # grid
         if show_grid:
             for x in range(0, WINDOW_WIDTH, CELL_SIZE):
                 pygame.draw.line(surface, GRID_CLR, (x, 0), (x, WINDOW_HEIGHT))

@@ -1,5 +1,3 @@
-# main.py - All screens + main game loop
-
 import sys
 import json
 import os
@@ -14,7 +12,6 @@ DEFAULT_SETTINGS = {
     "grid_overlay": True,
     "sound": True,
 }
-
 
 def load_settings() -> dict:
     try:
