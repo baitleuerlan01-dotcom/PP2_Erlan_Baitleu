@@ -48,5 +48,5 @@ DB_CONFIG = {
     "host":     "localhost",
     "dbname":   "snake_game",
     "user":     "postgres",
-    "password": "era110117",
+    "password": "e",
 }
